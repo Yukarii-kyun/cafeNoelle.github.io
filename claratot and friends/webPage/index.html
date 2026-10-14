@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Café Noelle | European-Style Café & Bistro</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Inter & Playfair Display -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,600;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            primary: '#C47087',      /* Vintage Rose / Dusty Rust */
+                            secondary: '#6A7B45',    /* Eucalyptus Lime / Sage Green */
+                            accent: '#F3E9DD',       /* Soft cream / warm beige */
+                            dark: '#3A3335',         /* Deep espresso / charcoal */
+                            light: '#FAF6F0',        /* Warm off-white */
+                            sand: '#EED9C4'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- External CSS Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="min-h-screen flex flex-col antialiased selection:bg-brand-primary selection:text-white">
+
+    <!-- Notification Modal / Alert Replacement -->
+    <div id="customModal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white rounded-2xl p-8 max-w-md w-full mx-4 shadow-2xl border border-brand-primary/20 transform scale-95 transition-transform duration-300" id="modalContent">
+            <div class="text-center">
+                <div id="modalIcon" class="w-16 h-16 bg-brand-secondary/20 text-brand-secondary rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+                <h3 id="modalTitle" class="text-2xl font-serif font-bold text-brand-dark mb-2">Success!</h3>
+                <p id="modalMessage" class="text-gray-600 mb-6 text-sm leading-relaxed">Your request has been successfully processed.</p>
+                <button onclick="closeModal()" class="w-full py-3 bg-brand-primary text-white font-medium rounded-xl hover:bg-brand-primary/90 transition shadow-lg shadow-brand-primary/20">
+                    Continue Exploring
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-brand-dark text-brand-accent text-xs py-2 px-4 text-center font-medium tracking-wide flex items-center justify-center gap-4">
+        <span><i class="fa-solid fa-mug-hot text-brand-primary mr-1.5"></i> Now Serving Afternoon Tea Sets across all Pampanga & Metro Manila branches!</span>
+        <a href="#reservations" onclick="switchPage('table-reservation')" class="underline hover:text-white transition">Book a Table</a>
+    </div>
+
+    <!-- Navigation Header -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-brand-accent shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Brand Logo -->
+            <a href="#" onclick="switchPage('home')" class="flex items-center gap-3 group">
+                <div class="w-11 h-11 rounded-full bg-brand-primary text-white flex items-center justify-center shadow-md group-hover:scale-105 transition">
+                    <i class="fa-solid fa-coffee-pot text-lg"></i>
+                </div>
+                <div>
+                    <span class="text-2xl font-serif font-bold tracking-tight text-brand-dark block">Café Noelle</span>
+                    <span class="text-[10px] tracking-widest uppercase text-brand-primary font-semibold">European Bistro & Café</span>
+                </div>
+            </a>
+
+            <!-- Desktop Nav Links -->
+            <nav class="hidden lg:flex items-center gap-1">
+                <button onclick="switchPage('home')" class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition text-brand-dark hover:bg-brand-accent/50" data-page="home">1.0 Home</button>
+                <div class="relative group">
+                    <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition text-brand-dark hover:bg-brand-accent/50 flex items-center gap-1.5" data-page="about">
+                        2.0 About Us <i class="fa-solid fa-angle-down text-xs opacity-60"></i>
+                    </button>
+                    <div class="absolute top-full left-0 w-56 bg-white rounded-xl shadow-xl border border-brand-accent p-2 hidden group-hover:block transition animate-fadeIn">
+                        <a href="#" onclick="switchPage('story')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">2.1 Story & Heritage</a>
+                        <a href="#" onclick="switchPage('branches')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">2.2 Branches & Ambiance</a>
+                    </div>
+                </div>
+                <div class="relative group">
+                    <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition text-brand-dark hover:bg-brand-accent/50 flex items-center gap-1.5" data-page="menu">
+                        3.0 Menu <i class="fa-solid fa-angle-down text-xs opacity-60"></i>
+                    </button>
+                    <div class="absolute top-full left-0 w-56 bg-white rounded-xl shadow-xl border border-brand-accent p-2 hidden group-hover:block transition">
+                        <a href="#" onclick="switchPage('menu-dining')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">3.1 All-Day Dining</a>
+                        <a href="#" onclick="switchPage('menu-coffee')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">3.2 Coffee & Beverages</a>
+                        <a href="#" onclick="switchPage('menu-desserts')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">3.3 Coffee & Desserts</a>
+                    </div>
+                </div>
+                <div class="relative group">
+                    <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition text-brand-dark hover:bg-brand-accent/50 flex items-center gap-1.5" data-page="events">
+                        4.0 Events <i class="fa-solid fa-angle-down text-xs opacity-60"></i>
+                    </button>
+                    <div class="absolute top-full left-0 w-56 bg-white rounded-xl shadow-xl border border-brand-accent p-2 hidden group-hover:block transition">
+                        <a href="#" onclick="switchPage('packages')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">4.1 Party Packages & Menus</a>
+                        <a href="#" onclick="switchPage('inquiry')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">4.2 Event Inquiry Form</a>
+                    </div>
+                </div>
+                <div class="relative group">
+                    <button class="nav-btn px-4 py-2 rounded-lg text-sm font-medium transition text-brand-dark hover:bg-brand-accent/50 flex items-center gap-1.5" data-page="promos">
+                        5.0 Promos & VIP <i class="fa-solid fa-angle-down text-xs opacity-60"></i>
+                    </button>
+                    <div class="absolute top-full left-0 w-56 bg-white rounded-xl shadow-xl border border-brand-accent p-2 hidden group-hover:block transition">
+                        <a href="#" onclick="switchPage('promotions')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">5.1 Seasonal Specials</a>
+                        <a href="#" onclick="switchPage('vip')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">5.2 VIP Club & Perks</a>
+                        <a href="#" onclick="switchPage('merch')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">5.3 Merch Store</a>
+                        <a href="#" onclick="switchPage('table-reservation')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">5.4 Table Reservation</a>
+                        <a href="#" onclick="switchPage('faqs')" class="block px-3 py-2 text-xs font-medium text-gray-700 hover:bg-brand-light rounded-lg">5.5 FAQs</a>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- CTA / Mobile Toggle -->
+            <div class="flex items-center gap-3">
+                <button onclick="switchPage('table-reservation')" class="hidden sm:inline-flex items-center gap-2 px-5 py-2.5 bg-brand-primary text-white rounded-xl font-medium text-sm hover:bg-brand-primary/95 shadow-lg shadow-brand-primary/20 transition transform hover:-translate-y-0.5">
+                    <i class="fa-solid fa-calendar-days"></i> Reserve a Table
+                </button>
+                <button onclick="toggleMobileMenu()" class="lg:hidden p-2.5 rounded-xl bg-brand-accent/50 text-brand-dark hover:bg-brand-accent transition">
+                    <i class="fa-solid fa-bars text-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Drawer -->
+        <div id="mobileMenu" class="lg:hidden hidden bg-white border-b border-brand-accent px-4 pt-2 pb-6 space-y-2 shadow-xl">
+            <button onclick="switchPage('home'); toggleMobileMenu();" class="block w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium hover:bg-brand-light">1.0 Home</button>
+            <div class="border-t border-brand-accent/40 pt-2 pb-1 px-4 text-xs font-bold uppercase tracking-wider text-brand-primary">2.0 About Us</div>
+            <button onclick="switchPage('story'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">2.1 Story & Heritage</button>
+            <button onclick="switchPage('branches'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">2.2 Branches & Ambiance</button>
+            
+            <div class="border-t border-brand-accent/40 pt-2 pb-1 px-4 text-xs font-bold uppercase tracking-wider text-brand-primary">3.0 Menu</div>
+            <button onclick="switchPage('menu-dining'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">3.1 All-Day Dining</button>
+            <button onclick="switchPage('menu-coffee'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">3.2 Coffee & Beverages</button>
+            <button onclick="switchPage('menu-desserts'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">3.3 Coffee & Desserts</button>
+
+            <div class="border-t border-brand-accent/40 pt-2 pb-1 px-4 text-xs font-bold uppercase tracking-wider text-brand-primary">4.0 Events & Catering</div>
+            <button onclick="switchPage('packages'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">4.1 Party Packages</button>
+            <button onclick="switchPage('inquiry'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">4.2 Event Inquiry Form</button>
+
+            <div class="border-t border-brand-accent/40 pt-2 pb-1 px-4 text-xs font-bold uppercase tracking-wider text-brand-primary">5.0 Promos & VIP</div>
+            <button onclick="switchPage('promotions'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">5.1 Seasonal Specials</button>
+            <button onclick="switchPage('vip'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">5.2 VIP Club & Perks</button>
+            <button onclick="switchPage('merch'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">5.3 Merch Store</button>
+            <button onclick="switchPage('table-reservation'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">5.4 Table Reservation</button>
+            <button onclick="switchPage('faqs'); toggleMobileMenu();" class="block w-full text-left px-6 py-2 rounded-lg text-xs font-medium text-gray-700 hover:bg-brand-light">5.5 FAQs</button>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Content Container -->
+    <main class="flex-grow">
+
+        <!-- ================= PAGE 1.0: HOME ================= -->
+        <div id="page-home" class="page-content animate-fadeIn">
+            <!-- Hero Section -->
+            <section class="relative bg-gradient-to-b from-brand-accent/30 to-brand-light py-20 lg:py-32 overflow-hidden">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+                        <div class="lg:col-span-7 space-y-6">
+                            <span class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-primary/10 text-brand-primary text-xs font-bold tracking-wider uppercase">
+                                <i class="fa-solid fa-sparkles"></i> Pampanga & Metro Manila's Favorite European Haven
+                            </span>
+                            <h1 class="text-4xl sm:text-6xl font-serif font-bold text-brand-dark leading-tight">
+                                Where European Elegance Meets <span class="text-brand-primary italic">Warm Culinary Art</span>
+                            </h1>
+                            <p class="text-gray-600 text-lg leading-relaxed max-w-xl">
+                                Step into Café Noelle for artisanal coffee, handcrafted pastries, and comforting European-Filipino comfort favorites in an Instagram-worthy ambiance.
+                            </p>
+                            <div class="flex flex-wrap gap-4 pt-4">
+                                <button onclick="switchPage('menu-dining')" class="px-8 py-4 bg-brand-primary text-white font-medium rounded-2xl shadow-xl shadow-brand-primary/25 hover:bg-brand-primary/90 transition flex items-center gap-2.5">
+                                    <i class="fa-solid fa-utensils"></i> Explore Menu
+                                </button>
+                                <button onclick="switchPage('table-reservation')" class="px-8 py-4 bg-white text-brand-dark border-2 border-brand-accent font-medium rounded-2xl hover:bg-brand-accent/20 transition flex items-center gap-2.5 shadow-sm">
+                                    <i class="fa-solid fa-calendar-check text-brand-secondary"></i> Reserve Table
+                                </button>
+                            </div>
+                            <!-- Branch Ticker / Quick Badges -->
+                            <div class="pt-6 border-t border-brand-accent/60 grid grid-cols-3 gap-4 text-xs font-medium text-gray-500">
+                                <div><i class="fa-solid fa-location-dot text-brand-primary mr-1"></i> Clark Freeport Zone</div>
+                                <div><i class="fa-solid fa-location-dot text-brand-primary mr-1"></i> San Fernando, Pampanga</div>
+                                <div><i class="fa-solid fa-location-dot text-brand-primary mr-1"></i> Quezon City, Manila</div>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5 relative">
+                            <div class="relative mx-auto max-w-md rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+                                <img src="https://images.unsplash.com/photo-1554118811-1e0d58224f24?auto=format&fit=crop&q=80&w=800" alt="Cafe Noelle Ambiance" class="w-full h-[460px] object-cover hover:scale-105 transition duration-700">
+                                <div class="absolute bottom-4 left-4 right-4 bg-white/90 backdrop-blur-md p-4 rounded-2xl shadow-lg border border-white/50 flex items-center justify-between">
+                                    <div>
+                                        <h4 class="font-serif font-bold text-brand-dark text-sm">Chef's Special Recommendation</h4>
+                                        <p class="text-xs text-gray-500">Truffle Cream Pasta & Signature Noelle Latte</p>
+                                    </div>
+                                    <span class="px-3 py-1 bg-brand-secondary text-white text-xs font-bold rounded-full">Top Seller</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Highlights Section -->
+            <section class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="text-center max-w-2xl mx-auto mb-16">
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">The Noelle Experience</span>
+                        <h2 class="text-3xl sm:text-4xl font-serif font-bold text-brand-dark mt-2">Crafted for Moments That Matter</h2>
+                        <p class="text-gray-600 mt-3 text-sm">From quiet morning coffee rituals to joyous family celebrations and private parties.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Card 1 -->
+                        <div class="glass-card p-8 rounded-3xl shadow-lg hover:-translate-y-1.5 transition duration-300 border border-brand-accent">
+                            <div class="w-14 h-14 rounded-2xl bg-brand-primary/10 text-brand-primary flex items-center justify-center text-2xl mb-6">
+                                <i class="fa-solid fa-croissant"></i>
+                            </div>
+                            <h3 class="text-xl font-serif font-bold text-brand-dark mb-3">All-Day European Dining</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-6">Savor comforting pastas, artisan sandwiches, freshly baked pastries, and signature brunch sets all day long.</p>
+                            <button onclick="switchPage('menu-dining')" class="text-brand-primary font-semibold text-sm flex items-center gap-2 hover:gap-3 transition">View All-Day Menu <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                        <!-- Card 2 -->
+                        <div class="glass-card p-8 rounded-3xl shadow-lg hover:-translate-y-1.5 transition duration-300 border border-brand-accent">
+                            <div class="w-14 h-14 rounded-2xl bg-brand-secondary/10 text-brand-secondary flex items-center justify-center text-2xl mb-6">
+                                <i class="fa-solid fa-mug-saucer"></i>
+                            </div>
+                            <h3 class="text-xl font-serif font-bold text-brand-dark mb-3">Specialty Coffee & Brews</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-6">Expertly roasted beans transformed into velvety lattes, cold brews, and seasonal signature beverages.</p>
+                            <button onclick="switchPage('menu-coffee')" class="text-brand-primary font-semibold text-sm flex items-center gap-2 hover:gap-3 transition">Discover Drinks <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                        <!-- Card 3 -->
+                        <div class="glass-card p-8 rounded-3xl shadow-lg hover:-translate-y-1.5 transition duration-300 border border-brand-accent">
+                            <div class="w-14 h-14 rounded-2xl bg-brand-primary/10 text-brand-primary flex items-center justify-center text-2xl mb-6">
+                                <i class="fa-solid fa-champagne-glasses"></i>
+                            </div>
+                            <h3 class="text-xl font-serif font-bold text-brand-dark mb-3">Private Events & Catering</h3>
+                            <p class="text-gray-600 text-sm leading-relaxed mb-6">Host your bridal showers, birthdays, and intimate receptions in our picturesque aesthetic function spaces.</p>
+                            <button onclick="switchPage('packages')" class="text-brand-primary font-semibold text-sm flex items-center gap-2 hover:gap-3 transition">Explore Packages <i class="fa-solid fa-arrow-right"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- ================= PAGE 2.1: STORY & HERITAGE ================= -->
+        <div id="page-story" class="page-content hidden animate-fadeIn py-16">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">2.1 Our Heritage</span>
+                    <h2 class="text-3xl sm:text-4xl font-serif font-bold text-brand-dark mt-2">The Café Noelle Story</h2>
+                    <p class="text-gray-600 mt-3 text-sm">Rooted in Pampanga's rich culinary culture, expanding across Luzon with grace and passion.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center mb-16">
+                    <img src="https://images.unsplash.com/photo-1442512595331-e89e73853f31?auto=format&fit=crop&q=80&w=800" alt="Cafe Founders" class="rounded-3xl shadow-xl w-full h-[380px] object-cover">
+                    <div class="space-y-4">
+                        <h3 class="text-2xl font-serif font-bold text-brand-dark">A Dream Born from European Travels</h3>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Established with a vision to bring European café culture to the vibrant culinary scene of Pampanga, Café Noelle combines rustic charm with modern aesthetic sophistication. Every corner is meticulously designed to offer warmth, comfort, and extraordinary flavors.
+                        </p>
+                        <p class="text-gray-600 text-sm leading-relaxed">
+                            Our founders believed that dining should be an immersive sensory journey—where delightful aromas of freshly brewed specialty coffee meet comforting, soul-satisfying dishes crafted from scratch.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 2.2: BRANCHES & AMBIANCE ================= -->
+        <div id="page-branches" class="page-content hidden animate-fadeIn py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">2.2 Locations</span>
+                    <h2 class="text-3xl sm:text-4xl font-serif font-bold text-brand-dark mt-2">Our Branches & Ambiance</h2>
+                    <p class="text-gray-600 mt-3 text-sm">Visit our uniquely designed spaces across Pampanga and Metro Manila.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Branch 1 -->
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-brand-accent">
+                        <img src="https://images.unsplash.com/photo-1501339847302-ac426a4a7cbb?auto=format&fit=crop&q=80&w=600" alt="Clark Branch" class="h-48 w-full object-cover">
+                        <div class="p-6 space-y-3">
+                            <span class="px-3 py-1 bg-brand-secondary/10 text-brand-secondary text-xs font-bold rounded-full">Flagship Branch</span>
+                            <h3 class="text-xl font-serif font-bold text-brand-dark">Clark Freeport Zone</h3>
+                            <p class="text-xs text-gray-600"><i class="fa-solid fa-location-dot text-brand-primary mr-1"></i> Mimosa Leisure Estate, Clark, Pampanga</p>
+                            <p class="text-xs text-gray-500"><i class="fa-solid fa-clock text-brand-primary mr-1"></i> Sun - Thu: 7 AM - 10 PM | Fri - Sat: 7 AM - 11 PM</p>
+                            <button onclick="switchPage('table-reservation')" class="w-full mt-4 py-2.5 bg-brand-primary text-white text-xs font-semibold rounded-xl hover:bg-brand-primary/90 transition">Reserve at Clark</button>
+                        </div>
+                    </div>
+                    <!-- Branch 2 -->
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-brand-accent">
+                        <img src="https://images.unsplash.com/photo-1521017432531-fbd92d768814?auto=format&fit=crop&q=80&w=600" alt="San Fernando Branch" class="h-48 w-full object-cover">
+                        <div class="p-6 space-y-3">
+                            <span class="px-3 py-1 bg-brand-primary/10 text-brand-primary text-xs font-bold rounded-full">Heritage Hub</span>
+                            <h3 class="text-xl font-serif font-bold text-brand-dark">San Fernando, Pampanga</h3>
+                            <p class="text-xs text-gray-600"><i class="fa-solid fa-location-dot text-brand-primary mr-1"></i> McArthur Highway, San Fernando</p>
+                            <p class="text-xs text-gray-500"><i class="fa-solid fa-clock text-brand-primary mr-1"></i> Daily: 8 AM - 9 PM</p>
+                            <button onclick="switchPage('table-reservation')" class="w-full mt-4 py-2.5 bg-brand-primary text-white text-xs font-semibold rounded-xl hover:bg-brand-primary/90 transition">Reserve at San Fernando</button>
+                        </div>
+                    </div>
+                    <!-- Branch 3 -->
+                    <div class="bg-white rounded-3xl overflow-hidden shadow-lg border border-brand-accent">
+                        <img src="https://images.unsplash.com/photo-1559925393-8be0ec4767c8?auto=format&fit=crop&q=80&w=600" alt="QC Branch" class="h-48 w-full object-cover">
+                        <div class="p-6 space-y-3">
+                            <span class="px-3 py-1 bg-brand-secondary/10 text-brand-secondary text-xs font-bold rounded-full">Urban Escape</span>
+                            <h3 class="text-xl font-serif font-bold text-brand-dark">Quezon City</h3>
+                            <p class="text-xs text-gray-600"><i class="fa-solid fa-location-dot text-brand-primary mr-1"></i> Tomas Morato Ave, Quezon City</p>
+                            <p class="text-xs text-gray-500"><i class="fa-solid fa-clock text-brand-primary mr-1"></i> Daily: 9 AM - 11 PM</p>
+                            <button onclick="switchPage('table-reservation')" class="w-full mt-4 py-2.5 bg-brand-primary text-white text-xs font-semibold rounded-xl hover:bg-brand-primary/90 transition">Reserve at Quezon City</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGES 3.1, 3.2, 3.3: MENU & ORDERING ================= -->
+        <div id="page-menu" class="page-content hidden animate-fadeIn py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-12">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">3.0 Culinary Offerings</span>
+                    <h2 class="text-3xl sm:text-4xl font-serif font-bold text-brand-dark mt-2">Explore Our Menu</h2>
+                    <p class="text-gray-600 mt-3 text-sm">Filter through our comforting dishes, specialty brews, and artisanal pastries.</p>
+                </div>
+
+                <!-- Menu Tabs Filter Navigation -->
+                <div class="flex flex-wrap justify-center gap-3 mb-12">
+                    <button onclick="filterMenu('all')" class="menu-tab-btn px-6 py-2.5 rounded-xl font-medium text-xs bg-brand-primary text-white transition shadow-sm" data-category="all">All Items</button>
+                    <button onclick="filterMenu('dining')" class="menu-tab-btn px-6 py-2.5 rounded-xl font-medium text-xs bg-white text-brand-dark border border-brand-accent hover:bg-brand-accent/20 transition" data-category="dining">3.1 All-Day Dining</button>
+                    <button onclick="filterMenu('coffee')" class="menu-tab-btn px-6 py-2.5 rounded-xl font-medium text-xs bg-white text-brand-dark border border-brand-accent hover:bg-brand-accent/20 transition" data-category="coffee">3.2 Coffee & Beverages</button>
+                    <button onclick="filterMenu('desserts')" class="menu-tab-btn px-6 py-2.5 rounded-xl font-medium text-xs bg-white text-brand-dark border border-brand-accent hover:bg-brand-accent/20 transition" data-category="desserts">3.3 Coffee & Desserts</button>
+                </div>
+
+                <!-- Menu Grid -->
+                <div id="menuGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Item 1 -->
+                    <div class="menu-card bg-white rounded-3xl overflow-hidden shadow-md border border-brand-accent flex flex-col" data-category="dining">
+                        <img src="https://images.unsplash.com/photo-1621996346565-e3d5d6281296?auto=format&fit=crop&q=80&w=600" alt="Truffle Pasta" class="h-52 w-full object-cover">
+                        <div class="p-6 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-serif font-bold text-lg text-brand-dark">Truffle Mushroom Cream Pasta</h3>
+                                    <span class="text-brand-primary font-bold">₱480</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mb-4 leading-relaxed">House-made fettuccine tossed in rich truffle cream sauce, wild forest mushrooms, and aged parmesan.</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-brand-accent/40">
+                                <span class="px-2.5 py-1 bg-brand-secondary/10 text-brand-secondary text-[10px] font-bold rounded-md">Chef's Recommendation</span>
+                                <span class="px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded">Vegetarian Option</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 2 -->
+                    <div class="menu-card bg-white rounded-3xl overflow-hidden shadow-md border border-brand-accent flex flex-col" data-category="dining">
+                        <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?auto=format&fit=crop&q=80&w=600" alt="Noelle Burger" class="h-52 w-full object-cover">
+                        <div class="p-6 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-serif font-bold text-lg text-brand-dark">Noelle Truffle Wagyu Burger</h3>
+                                    <span class="text-brand-primary font-bold">₱520</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mb-4 leading-relaxed">Juicy wagyu beef patty, melted gruyere cheese, caramelized onions, and truffle aioli on a brioche bun.</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-brand-accent/40">
+                                <span class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-[10px] font-bold rounded-md">Best Seller</span>
+                                <span class="px-2 py-0.5 bg-red-50 text-red-700 text-[10px] font-medium rounded">Gluten-Free Option</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 3 -->
+                    <div class="menu-card bg-white rounded-3xl overflow-hidden shadow-md border border-brand-accent flex flex-col" data-category="coffee">
+                        <img src="https://images.unsplash.com/photo-1541167760496-1628856ab772?auto=format&fit=crop&q=80&w=600" alt="Signature Latte" class="h-52 w-full object-cover">
+                        <div class="p-6 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-serif font-bold text-lg text-brand-dark">Signature Noelle Spanish Latte</h3>
+                                    <span class="text-brand-primary font-bold">₱195</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mb-4 leading-relaxed">Double shot of specialty espresso paired with condensed milk, fresh steamed milk, and a hint of vanilla.</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-brand-accent/40">
+                                <span class="px-2.5 py-1 bg-brand-secondary/10 text-brand-secondary text-[10px] font-bold rounded-md">Signature Drink</span>
+                                <span class="px-2 py-0.5 bg-green-50 text-green-700 text-[10px] font-medium rounded">Dairy-Alternative Available</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 4 -->
+                    <div class="menu-card bg-white rounded-3xl overflow-hidden shadow-md border border-brand-accent flex flex-col" data-category="coffee">
+                        <img src="https://images.unsplash.com/photo-1517701604599-bb29b565090c?auto=format&fit=crop&q=80&w=600" alt="Cold Brew" class="h-52 w-full object-cover">
+                        <div class="p-6 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-serif font-bold text-lg text-brand-dark">Velvet Vanilla Cold Brew</h3>
+                                    <span class="text-brand-primary font-bold">₱210</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mb-4 leading-relaxed">Steeped for 24 hours with organic vanilla beans for a smooth, low-acidity refreshing pick-me-up.</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-brand-accent/40">
+                                <span class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-[10px] font-bold rounded-md">Refreshing</span>
+                                <span class="px-2 py-0.5 bg-blue-50 text-blue-700 text-[10px] font-medium rounded">Vegan Friendly</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 5 -->
+                    <div class="menu-card bg-white rounded-3xl overflow-hidden shadow-md border border-brand-accent flex flex-col" data-category="desserts">
+                        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?auto=format&fit=crop&q=80&w=600" alt="Chocolate Cake" class="h-52 w-full object-cover">
+                        <div class="p-6 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-serif font-bold text-lg text-brand-dark">Noelle Belgian Dark Chocolate Cake</h3>
+                                    <span class="text-brand-primary font-bold">₱280</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mb-4 leading-relaxed">Decadent multi-layered moist chocolate sponge with rich ganache made from premium Belgian cocoa.</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-brand-accent/40">
+                                <span class="px-2.5 py-1 bg-brand-secondary/10 text-brand-secondary text-[10px] font-bold rounded-md">Best Seller</span>
+                                <span class="px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded">Sweet Treat</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Item 6 -->
+                    <div class="menu-card bg-white rounded-3xl overflow-hidden shadow-md border border-brand-accent flex flex-col" data-category="desserts">
+                        <img src="https://images.unsplash.com/photo-1533134242443-d4fd215305ad?auto=format&fit=crop&q=80&w=600" alt="Croissant" class="h-52 w-full object-cover">
+                        <div class="p-6 flex-grow flex flex-col justify-between">
+                            <div>
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-serif font-bold text-lg text-brand-dark">Almond Butter Croissant</h3>
+                                    <span class="text-brand-primary font-bold">₱180</span>
+                                </div>
+                                <p class="text-xs text-gray-600 mb-4 leading-relaxed">Flaky, buttery French croissant filled with sweet almond cream and toasted sliced almonds on top.</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-4 border-t border-brand-accent/40">
+                                <span class="px-2.5 py-1 bg-brand-primary/10 text-brand-primary text-[10px] font-bold rounded-md">Freshly Baked</span>
+                                <span class="px-2 py-0.5 bg-amber-50 text-amber-700 text-[10px] font-medium rounded">Pastry</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGE 4.0 & 4.2: PRIVATE EVENTS & INQUIRY ================= -->
+        <div id="page-events" class="page-content hidden animate-fadeIn py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">4.0 Private Events & Catering</span>
+                    <h2 class="text-3xl sm:text-4xl font-serif font-bold text-brand-dark mt-2">Celebrate With Elegance</h2>
+                    <p class="text-gray-600 mt-3 text-sm">Host your birthdays, bridal showers, and executive meetings with customized catering and charming function setups.</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+                    <!-- Party Packages Overview (4.1) -->
+                    <div class="space-y-6">
+                        <h3 class="text-2xl font-serif font-bold text-brand-dark">4.1 Party Packages & Function Menus</h3>
+                        
+                        <div class="bg-white p-6 rounded-3xl shadow-md border border-brand-accent space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-serif font-bold text-brand-primary text-lg">Intimate Gathering Tier</h4>
+                                <span class="text-xs font-bold bg-brand-secondary/10 text-brand-secondary px-3 py-1 rounded-full">Up to 30 Pax</span>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed">Includes private nook use for 4 hours, plated 4-course European meal, iced tea, and custom dessert table.</p>
+                            <p class="text-sm font-bold text-brand-dark">₱25,000 total package</p>
+                        </div>
+
+                        <div class="bg-white p-6 rounded-3xl shadow-md border border-brand-accent space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h4 class="font-serif font-bold text-brand-primary text-lg">Grand Bistro Celebration Tier</h4>
+                                <span class="text-xs font-bold bg-brand-primary/10 text-brand-primary px-3 py-1 rounded-full">Up to 70 Pax</span>
+                            </div>
+                            <p class="text-xs text-gray-600 leading-relaxed">Full café exclusivity, customized buffet menu, coffee bar station, sound system, and floral table styling.</p>
+                            <p class="text-sm font-bold text-brand-dark">₱55,000 total package</p>
+                        </div>
+                    </div>
+
+                    <!-- Event Inquiry Form (4.2) -->
+                    <div class="bg-white p-8 rounded-3xl shadow-xl border border-brand-accent">
+                        <h3 class="text-2xl font-serif font-bold text-brand-dark mb-6">4.2 Event Inquiry Form</h3>
+                        <form onsubmit="handleEventInquiry(event)" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Full Name</label>
+                                <input type="text" required class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm" placeholder="e.g. Maria Santos">
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Email Address</label>
+                                    <input type="email" required class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm" placeholder="maria@example.com">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Mobile Number</label>
+                                    <input type="tel" required class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm" placeholder="0917XXXXXXX">
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Event Type</label>
+                                    <select class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm">
+                                        <option>Bridal Shower</option>
+                                        <option>Birthday Party</option>
+                                        <option>Corporate Meeting</option>
+                                        <option>Private Reception</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Estimated Guests</label>
+                                    <input type="number" min="10" max="100" required class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm" placeholder="30">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Special Requests & Details</label>
+                                <textarea rows="3" class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm" placeholder="Tell us about your preferred date and dietary requirements..."></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-3.5 bg-brand-primary text-white font-medium rounded-xl hover:bg-brand-primary/90 transition shadow-lg shadow-brand-primary/20">
+                                Submit Event Inquiry
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= PAGES 5.1, 5.2, 5.3, 5.4, 5.5: PROMOS, VIP, MERCH, RESERVATIONS, FAQS ================= -->
+        <div id="page-promos" class="page-content hidden animate-fadeIn py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
+                
+                <!-- 5.1 Seasonal Specials -->
+                <div>
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">5.1 Seasonal Specials</span>
+                        <h2 class="text-3xl font-serif font-bold text-brand-dark mt-2">Fernando & Pamana Collections</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="bg-white p-8 rounded-3xl shadow-md border border-brand-accent flex gap-6 items-center">
+                            <img src="https://images.unsplash.com/photo-1544787219-7f47ccb76574?auto=format&fit=crop&q=80&w=400" alt="Pamana Collection" class="w-32 h-32 object-cover rounded-2xl">
+                            <div>
+                                <span class="text-xs font-bold text-brand-secondary bg-brand-secondary/10 px-3 py-1 rounded-full">Limited Edition</span>
+                                <h3 class="font-serif font-bold text-xl text-brand-dark mt-2">The Pamana Heritage Set</h3>
+                                <p class="text-xs text-gray-600 mt-1">Kapampangan heirloom pastry pairings infused with European butter and local cacao.</p>
+                                <span class="text-sm font-bold text-brand-primary mt-3 block">₱420 / set</span>
+                            </div>
+                        </div>
+                        <div class="bg-white p-8 rounded-3xl shadow-md border border-brand-accent flex gap-6 items-center">
+                            <img src="https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?auto=format&fit=crop&q=80&w=400" alt="Fernando Collection" class="w-32 h-32 object-cover rounded-2xl">
+                            <div>
+                                <span class="text-xs font-bold text-brand-primary bg-brand-primary/10 px-3 py-1 rounded-full">Afternoon Tea</span>
+                                <h3 class="font-serif font-bold text-xl text-brand-dark mt-2">Fernando High Tea Trio</h3>
+                                <p class="text-xs text-gray-600 mt-1">Selection of finger sandwiches, delicate macarons, and a pot of loose-leaf Earl Grey.</p>
+                                <span class="text-sm font-bold text-brand-primary mt-3 block">₱650 / duo</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5.2 VIP Club & Perks -->
+                <div class="bg-brand-dark text-white p-10 rounded-3xl shadow-xl relative overflow-hidden">
+                    <div class="absolute -right-10 -bottom-10 opacity-10 text-9xl font-serif font-bold">VIP</div>
+                    <div class="max-w-xl relative z-10 space-y-4">
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">5.2 VIP Club</span>
+                        <h2 class="text-3xl font-serif font-bold">Join the Noelle Connoisseur Club</h2>
+                        <p class="text-gray-300 text-sm leading-relaxed">Enjoy 10% off on all beverages, priority table reservations during weekends, and exclusive invites to seasonal menu tastings.</p>
+                        <button onclick="showModal('VIP Club', 'Welcome to the inner circle! Your VIP membership invite has been sent to your email.')" class="px-6 py-3 bg-brand-primary text-white font-medium rounded-xl hover:bg-brand-primary/90 transition shadow-lg">
+                            Claim VIP Membership
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 5.3 Merch Store -->
+                <div>
+                    <div class="text-center max-w-2xl mx-auto mb-12">
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">5.3 Merch Store</span>
+                        <h2 class="text-3xl font-serif font-bold text-brand-dark mt-2">Take Home the Aesthetic</h2>
+                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="bg-white p-6 rounded-3xl shadow-md border border-brand-accent text-center space-y-4">
+                            <img src="https://images.unsplash.com/photo-1514228742587-6b1558fcca3d?auto=format&fit=crop&q=80&w=400" alt="Mug" class="h-48 w-full object-cover rounded-2xl">
+                            <h3 class="font-serif font-bold text-lg text-brand-dark">Noelle Ceramic Coffee Mug</h3>
+                            <p class="text-xs text-brand-primary font-bold">₱450</p>
+                            <button onclick="showModal('Added to Cart', 'Ceramic Coffee Mug added to your order cart.')" class="w-full py-2 bg-brand-accent text-brand-dark text-xs font-semibold rounded-xl hover:bg-brand-accent/70 transition">Add to Cart</button>
+                        </div>
+                        <div class="bg-white p-6 rounded-3xl shadow-md border border-brand-accent text-center space-y-4">
+                            <img src="https://images.unsplash.com/photo-1597484662317-c99b74054a37?auto=format&fit=crop&q=80&w=400" alt="Tote Bag" class="h-48 w-full object-cover rounded-2xl">
+                            <h3 class="font-serif font-bold text-lg text-brand-dark">Canvas Aesthetic Tote Bag</h3>
+                            <p class="text-xs text-brand-primary font-bold">₱380</p>
+                            <button onclick="showModal('Added to Cart', 'Canvas Tote Bag added to your order cart.')" class="w-full py-2 bg-brand-accent text-brand-dark text-xs font-semibold rounded-xl hover:bg-brand-accent/70 transition">Add to Cart</button>
+                        </div>
+                        <div class="bg-white p-6 rounded-3xl shadow-md border border-brand-accent text-center space-y-4">
+                            <img src="https://images.unsplash.com/photo-1588282322673-c31965a75c3e?auto=format&fit=crop&q=80&w=400" alt="Coffee Beans" class="h-48 w-full object-cover rounded-2xl">
+                            <h3 class="font-serif font-bold text-lg text-brand-dark">Signature House Blend Beans (250g)</h3>
+                            <p class="text-xs text-brand-primary font-bold">₱550</p>
+                            <button onclick="showModal('Added to Cart', 'House Blend Coffee Beans added to your order cart.')" class="w-full py-2 bg-brand-accent text-brand-dark text-xs font-semibold rounded-xl hover:bg-brand-accent/70 transition">Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5.4 Table Reservation Form -->
+                <div id="reservations" class="bg-white p-10 rounded-3xl shadow-xl border border-brand-accent max-w-3xl mx-auto">
+                    <div class="text-center mb-8">
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">5.4 Table Reservation</span>
+                        <h2 class="text-3xl font-serif font-bold text-brand-dark mt-2">Secure Your Table</h2>
+                        <p class="text-gray-600 text-sm mt-1">Book your spot at any of our branches instantly.</p>
+                    </div>
+                    <form onsubmit="handleReservation(event)" class="space-y-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Select Branch</label>
+                                <select class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm">
+                                    <option>Clark Freeport Zone (Flagship)</option>
+                                    <option>San Fernando, Pampanga</option>
+                                    <option>Quezon City (Tomas Morato)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Number of Guests</label>
+                                <select class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm">
+                                    <option>1 - 2 Persons (Cozy Nook)</option>
+                                    <option>3 - 4 Persons (Standard Table)</option>
+                                    <option>5 - 8 Persons (Family Table)</option>
+                                    <option>9+ Persons (Function Area)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Reservation Date</label>
+                                <input type="date" required class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Preferred Time</label>
+                                <input type="time" required class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm">
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Full Name</label>
+                                <input type="text" required class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm" placeholder="Juan dela Cruz">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-bold uppercase text-gray-600 mb-1">Mobile Number</label>
+                                <input type="tel" required class="w-full px-4 py-3 rounded-xl border border-brand-accent focus:outline-none focus:border-brand-primary text-sm" placeholder="0917XXXXXXX">
+                            </div>
+                        </div>
+                        <button type="submit" class="w-full py-4 bg-brand-primary text-white font-medium rounded-xl hover:bg-brand-primary/90 transition shadow-lg shadow-brand-primary/20 mt-4">
+                            Confirm Table Reservation
+                        </button>
+                    </form>
+                </div>
+
+                <!-- 5.5 FAQs -->
+                <div class="max-w-3xl mx-auto space-y-6">
+                    <div class="text-center mb-8">
+                        <span class="text-xs font-bold uppercase tracking-widest text-brand-primary">5.5 Support</span>
+                        <h2 class="text-3xl font-serif font-bold text-brand-dark mt-2">Frequently Asked Questions</h2>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-accent space-y-2">
+                        <h4 class="font-serif font-bold text-brand-dark">Do you accept walk-ins or reservations only?</h4>
+                        <p class="text-xs text-gray-600 leading-relaxed">We welcome both! However, for weekends and peak afternoon tea hours, we highly recommend booking a table in advance.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-accent space-y-2">
+                        <h4 class="font-serif font-bold text-brand-dark">Are pets allowed inside Café Noelle branches?</h4>
+                        <p class="text-xs text-gray-600 leading-relaxed">Yes, our al fresco garden seating areas across all branches are fully pet-friendly.</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-brand-accent space-y-2">
+                        <h4 class="font-serif font-bold text-brand-dark">Do you offer vegetarian and gluten-free options?</h4>
+                        <p class="text-xs text-gray-600 leading-relaxed">Yes! Our menu clearly indicates dietary tags including vegetarian, gluten-free, and vegan-friendly alternatives.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-brand-dark text-brand-accent pt-16 pb-12 mt-20 border-t border-brand-accent/10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+            <div class="space-y-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-brand-primary text-white flex items-center justify-center">
+                        <i class="fa-solid fa-coffee-pot"></i>
+                    </div>
+                    <span class="text-xl font-serif font-bold text-white">Café Noelle</span>
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    European-style café & bistro offering comforting dining, specialty coffee, and aesthetic spaces for unforgettable moments.
+                </p>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-white text-sm mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-xs text-gray-400">
+                    <li><a href="#" onclick="switchPage('home')" class="hover:text-white transition">Home</a></li>
+                    <li><a href="#" onclick="switchPage('story')" class="hover:text-white transition">Our Heritage</a></li>
+                    <li><a href="#" onclick="switchPage('menu-dining')" class="hover:text-white transition">All-Day Menu</a></li>
+                    <li><a href="#" onclick="switchPage('packages')" class="hover:text-white transition">Party Packages</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-white text-sm mb-4">Branches</h4>
+                <ul class="space-y-2 text-xs text-gray-400">
+                    <li>Clark Freeport Zone, Pampanga</li>
+                    <li>McArthur Highway, San Fernando</li>
+                    <li>Tomas Morato, Quezon City</li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="font-serif font-bold text-white text-sm mb-4">Connect With Us</h4>
+                <div class="flex gap-3 text-lg mb-4">
+                    <a href="#" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-primary transition text-white"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="#" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-primary transition text-white"><i class="fa-brands fa-instagram"></i></a>
+                    <a href="#" class="w-9 h-9 rounded-full bg-white/10 flex items-center justify-center hover:bg-brand-primary transition text-white"><i class="fa-brands fa-tiktok"></i></a>
+                </div>
+                <p class="text-[11px] text-gray-400">© 2026 Café Noelle Digital Project. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- External JavaScript File Reference -->
+    <script src="script.js"></script>
+</body>
+</html>
